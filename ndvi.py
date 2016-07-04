@@ -1,11 +1,13 @@
-# script to automatically crop all photos in directory
+# program to determine NDVI index for plant
 
 from __future__ import print_function
 from PIL import Image
 import os
 import numpy as np
 
+# Function to calculate NDVI index given image
 def ndvi(image):
+    # Creates spectral data from image
     img = np.asarray(image)
     r = img[:,:,0]/255
     #print (r)
@@ -14,6 +16,7 @@ def ndvi(image):
     #print (b)
     ndvi = np.zeros((r.shape[0], r.shape[1]))
 
+    # Calculates NDVI index
     try:
         ndvi = (2*b - r)/r
     except RuntimeWarning:
@@ -25,32 +28,10 @@ def ndvi(image):
             if ndvi[i][j] > 1:
                 neg_count += 1
     print(neg_count)
-    """
-    neg_count = 0
-    for i in range(r.shape[0]):
-        #print (i)
-        for j in range(r.shape[1]):
-            d_now = r[i][j]
-            n_now = 2*b[i][j] - r[i][j]
-            #print (d_now)
-            #print (n_now)
-            if d_now == 0:
-                if n_now > 0:
-                    ndvi[i][j] = 1
-                elif n_now < 0:
-                    ndvi[i][j] = -1
-                else:
-                    ndvi[i][j] = 0
-            else:
-                ndvi[i][j] = n_now/d_now
-                #print (ndvi[i][j])
-            if ndvi[i][j] <= 0:
-                neg_count += 1
-    print (neg_count)
-    """
+    
     return ndvi
 
-
+# Loops through all files in the directory and calls the ndvi function
 base_dir = '/home/v-gupta/wv2016/real_project/plant'
 os.chdir(base_dir)
 dirs = os.listdir()
